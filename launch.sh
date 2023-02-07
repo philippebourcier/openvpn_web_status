@@ -1,2 +1,4 @@
 #!/bin/bash
-python3 -m uvicorn main:app --reload --host 0.0.0.0 --port 80
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+cd $SCRIPT_DIR
+python3 -m uvicorn main:app --reload --host 0.0.0.0 --port 80 &

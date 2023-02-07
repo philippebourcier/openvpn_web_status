@@ -2,41 +2,40 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>OpenVPN Server Status</title>
-  <link rel="stylesheet" href="css/tabulator.min.css">
-  <script src="js/tabulator.min.js"></script>
-  <style>
-	body { font-family: Verdana, sans-serif; }
-  </style>
+  <script src="js/jquery-3.6.3.min.js" crossorigin="anonymous"></script>
+  <script src="js/popper.min.js" crossorigin="anonymous"></script>
+  <script src="js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="css/bootstrap.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="css/tabulator.min.css" crossorigin="anonymous">
+  <script src="js/tab54.min.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="css/main.css" crossorigin="anonymous">
 </head>
 <body>
-<div class="container">
-  <div id="ctable"></div>
-</div>
-<script>
-	var table = new Tabulator("#ctable", {
-		height:"100%",
-		layout:"fitColumns",
-		columns:[
-			{title:"User", field:"CN", sorter:"string", width:"15%"},
-			{title:"Remote IP Address", field:"RemoteIP", sorter:"string", hozAlign:"left"},
-			{title:"Local IP Address", field:"LocalIP", sorter:"string", hozAlign:"left"},
-			{title:"Bytes Received", field:"Bytes_Recv", sorter:"string"},
-			{title:"Bytes Sent", field:"Bytes_Sent", sorter:"string"},
-			{title:"Connected Since", field:"Connected_Since", sorter:"date", hozAlign:"center"},
-		]
-	});
-	function update_table() {
- 	                const xhttp = new XMLHttpRequest();
-                        xhttp.open("GET","/ovpn");
-                        xhttp.send();
-			xhttp.onload = function() {
-				data=JSON.parse(xhttp.responseText);
-                        	table.replaceData(data["usr"]);
-			};
-	}
-	update_table();
-	setInterval(function(){ update_table(); },10000);
-</script>
+ <div class="page">
+  <div class="split top">
+    <div id="ctable"></div>
+  </div>
+  <div class="split bottom">
+    <div id="utable"></div>
+  </div>
+ </div>
+ <div class="modal" id="modal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modt"></h5>
+        <button type="button" class="btn-close" id="topclose" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center" id="modb">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="close" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+ </div>
+ <script src="js/main.js" crossorigin="anonymous"></script>
 </body>
 </html>
