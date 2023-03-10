@@ -17,11 +17,10 @@ ADMIN_PASS="change-me"
 ###
 DEBUG=False
 ROOT=""
-CA_DIR=ROOT+"/openvpn/pki/"
-CONFIGS_DIR=ROOT+"/openvpn/ovpn/"
-OVPN_DIR=ROOT+"/etc/openvpn/server/"
-EASYRSA=ROOT+"/openvpn/easyrsa"
-BASE_CONF=OVPN_DIR+"layer2.ovpn"
+CA_DIR=ROOT+"/openvpn/easy-rsa/pki/"
+OVPN_DIR=ROOT+"/openvpn/server/"
+EASYRSA=ROOT+"/openvpn/easy-rsa/easyrsa"
+BASE_CONF=OVPN_DIR+"layer2.conf"
 CA_FILE=CA_DIR+"ca.crt"
 ###############################################
 
@@ -37,8 +36,8 @@ def merge_cert_config(username):
     # Test if files exists and are readable
     for file in [ BASE_CONF, CLIENT_CERT ]:
         if os.path.isfile(file):
+            if DEBUG: print("Testing if "+file+" exists.")
             with open(file,"r") as fp:
-                if DEBUG: print("Testing if "+file+" exists.")
                 if not fp.readable(): return False
                 if DEBUG: print("Testing if "+file+" exists : OK")
         else: return False
@@ -53,11 +52,11 @@ def merge_cert_config(username):
 def new_user(username,password=""):
     if not username.isalnum(): return { "user" : "Fatal error", "password" : "Username should be only alphanumeric." }
     if password=="":
-        os.system(EASYRSA+" --vars="+CA_DIR+"vars --batch build-client-full "+username+" nopass"+STDNULL)
+        os.system(EASYRSA+" --vars="+CA_DIR+"vars --pki-dir="+CA_DIR+" --batch build-client-full "+username+" nopass"+STDNULL)
     else:
-        os.system(EASYRSA+" --vars="+CA_DIR+"vars --batch --passout=pass:"+password+" build-client-full "+username+STDNULL)
+        os.system(EASYRSA+" --vars="+CA_DIR+"vars --pki-dir="+CA_DIR+" --batch --passout=pass:"+password+" build-client-full "+username+STDNULL)
     sleep(1)
-    os.system(EASYRSA+" --vars="+CA_DIR+"vars --batch gen-crl"+STDNULL)
+    os.system(EASYRSA+" --vars="+CA_DIR+"vars --pki-dir="+CA_DIR+" --batch gen-crl"+STDNULL)
     sleep(1)
     os.system("/usr/sbin/service openvpn reload"+STDNULL)
     if merge_cert_config(username): return { "user" : username, "password" : password }
@@ -65,9 +64,9 @@ def new_user(username,password=""):
 
 def del_user(username):
     if not username.isalnum(): return { "user" : "Fatal error" }
-    os.system(EASYRSA+" --vars="+CA_DIR+"vars --batch revoke "+username+STDNULL)
+    os.system(EASYRSA+" --vars="+CA_DIR+"vars --pki-dir="+CA_DIR+" --batch revoke "+username+STDNULL)
     sleep(1)
-    os.system(EASYRSA+" --vars="+CA_DIR+"vars --batch gen-crl"+STDNULL)
+    os.system(EASYRSA+" --vars="+CA_DIR+"vars --pki-dir="+CA_DIR+" --batch gen-crl"+STDNULL)
     sleep(1)
     os.system("/usr/sbin/service openvpn reload"+STDNULL)
     return { "user" : username }
