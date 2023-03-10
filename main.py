@@ -35,8 +35,8 @@ def merge_cert_config(username):
     CLIENT_CERT=CA_DIR+"inline/"+username+".inline"
     # Test if files exists and are readable
     for file in [ BASE_CONF, CLIENT_CERT ]:
+        if DEBUG: print("Testing if "+file+" exists.")
         if os.path.isfile(file):
-            if DEBUG: print("Testing if "+file+" exists.")
             with open(file,"r") as fp:
                 if not fp.readable(): return False
                 if DEBUG: print("Testing if "+file+" exists : OK")
