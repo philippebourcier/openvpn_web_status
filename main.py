@@ -16,7 +16,7 @@ ADMIN_LOGIN="set_me"
 ADMIN_PASS="change-me"
 ###
 DEBUG=False
-ROOT=""
+ROOT="/etc"
 CA_DIR=ROOT+"/openvpn/easy-rsa/pki/"
 OVPN_DIR=ROOT+"/openvpn/server/"
 EASYRSA=ROOT+"/openvpn/easy-rsa/easyrsa"
